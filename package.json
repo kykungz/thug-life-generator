@@ -11,9 +11,15 @@
     "@ant-design/react-native": "^3.1.8",
     "babel-plugin-import": "^1.11.0",
     "expo": "^32.0.0",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.25",
     "react": "^16.8.6",
     "react-native": "https://github.com/the-atelier/react-native#sdk-32",
+    "react-native-action-button": "^2.8.5",
+    "react-native-camera-kit": "^8.0.0",
     "react-native-super-grid": "^3.0.4",
+    "react-navigation": "^3.9.1",
+    "react-navigation-transitions": "^1.0.10",
     "styled-components": "^4.2.0"
   },
   "devDependencies": {

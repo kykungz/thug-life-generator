@@ -8,6 +8,16 @@ const router = [
     icon: 'home',
     screen: MyMemeScreen,
   },
+  {
+    title: 'World Memes',
+    icon: 'shop',
+    screen: MyMemeScreen,
+  },
+  {
+    title: 'Setting',
+    icon: 'setting',
+    screen: MyMemeScreen,
+  },
 ]
 
 const tabBarOptions = {
@@ -16,7 +26,7 @@ const tabBarOptions = {
   barTintColor: '#f5f5f5',
 }
 
-export default () => {
+export default props => {
   const [currentTab, setCurrentTab] = useState(router[0].title)
 
   return (
@@ -29,7 +39,7 @@ export default () => {
           selected={currentTab === route.title}
           onPress={() => setCurrentTab(route.title)}
         >
-          {route.screen()}
+          {route.screen(props)}
         </TabBar.Item>
       ))}
     </TabBar>

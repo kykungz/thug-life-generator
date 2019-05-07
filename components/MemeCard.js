@@ -46,10 +46,13 @@ const Wrapper = styled.View`
 
 const InfoContainer = styled.View`
   background: white;
+  padding: 8px;
 `
 
 export default props => {
-  const { cover, contain } = props
+  const { contain } = props
+  const { cover, name } = props.item
+
   return (
     <Wrapper>
       <Container>
@@ -59,7 +62,7 @@ export default props => {
           <CoverTop source={cover} />
         )}
         <InfoContainer>
-          <Text>Hi</Text>
+          <Text>{name}</Text>
         </InfoContainer>
       </Container>
     </Wrapper>
