@@ -2,20 +2,29 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
+    "clean": "expo start --clear",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "eject": "expo eject"
   },
   "dependencies": {
     "@ant-design/react-native": "^3.1.8",
+    "babel-plugin-import": "^1.11.0",
     "expo": "^32.0.0",
     "react": "^16.8.6",
     "react-native": "https://github.com/the-atelier/react-native#sdk-32",
+    "react-native-super-grid": "^3.0.4",
     "styled-components": "^4.2.0"
   },
   "devDependencies": {
     "@babel/runtime": "^7.4.4",
+    "babel-eslint": "^10.0.1",
     "babel-preset-expo": "^5.0.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.2.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-react": "^7.13.0",
+    "prettier": "^1.17.0",
     "schedule": "0.4.0"
   },
   "private": true

@@ -1,17 +1,12 @@
 import React, { useState } from 'react'
-import { Icon, TabBar } from '@ant-design/react-native'
-import { Text, View } from 'react-native'
+import { Icon, TabBar } from 'antd'
+import MyMemeScreen from './screens/MyMemeScreen'
 
 const router = [
   {
     title: 'My Memes',
     icon: 'home',
-    screen: () => <Text>My memes</Text>,
-  },
-  {
-    title: 'Memes Market',
-    icon: 'shop',
-    screen: () => <Text>My memes</Text>,
+    screen: MyMemeScreen,
   },
 ]
 
