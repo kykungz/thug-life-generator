@@ -57,8 +57,14 @@ const handleCustomTransition = ({ scenes }) => {
 
 const TabNavigator = createBottomTabNavigator(
   {
-    Main: MyMemeScreen,
-    Setting: SettingScreen,
+    Main: {
+      screen: MyMemeScreen,
+      navigationOptions: { title: `My Memes` },
+    },
+    Setting: {
+      screen: SettingScreen,
+      navigationOptions: { title: `Settings` },
+    },
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({

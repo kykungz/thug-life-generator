@@ -22,6 +22,4 @@ const SettingScreen = () => {
   )
 }
 
-SettingScreen.navigationOptions = { title: `Create New Meme` }
-
 export default SettingScreen

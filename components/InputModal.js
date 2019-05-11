@@ -100,7 +100,7 @@ export default props => {
             placeholder={placeholder}
             onChangeText={setInputText}
           />
-          <Button type="primary" onPress={handleSubmit}>
+          <Button type="warning" onPress={handleSubmit}>
             Submit
           </Button>
         </ModalContent>

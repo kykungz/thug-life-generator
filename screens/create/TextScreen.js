@@ -7,12 +7,16 @@ import {
   StyleSheet,
   ScrollView,
   View,
+  PixelRatio,
 } from 'react-native'
 import { takeSnapshotAsync, MediaLibrary } from 'expo'
 import { Step } from './styled'
 import styled from 'styled-components'
-import { Button, WingBlank } from 'antd'
+import { Button, WingBlank, ActivityIndicator } from 'antd'
 import InputModal from '../../components/InputModal'
+import firebase from 'firebase'
+import b64 from 'base64-js'
+import moment from 'moment-timezone'
 
 const styles = StyleSheet.create({
   textWithShadow: {
@@ -93,22 +97,70 @@ export default props => {
   const [imgHeight, setImgHeight] = useState(0)
   const [topDialogVisible, setTopDialogVisible] = useState(false)
   const [bottomDialogVisible, setBottomDialogVisible] = useState(false)
-  const [topText, setTopText] = useState('พี่ดุนะ')
-  const [bottomText, setBottomText] = useState('น้องไหวหรอ')
+  const [topText, setTopText] = useState('')
+  const [bottomText, setBottomText] = useState('')
+  const [titleDialogVisible, setTitleDialogVisible] = useState(false)
+  const [title, setTitle] = useState('')
+  const [loading, setLoading] = useState(false)
+
   const meme = useRef(null)
 
   // const photoUri =
   //   'file:///var/mobile/Containers/Data/Application/4CD7F258-A542-4D25-84E3-6BFC4A096D2F/Library/Caches/ExponentExperienceData/%2540anonymous%252Fthug-life-generator-abaa7a31-9515-47e1-9c7b-2039b3874be4/ImagePicker/A1AEE045-4DAC-4E4E-A75A-22CE418F83A8.jpg'
   // const photoUri = 'https://i.imgflip.com/5hg1b.jpg'
 
+  useEffect(() => {
+    if (title !== '') {
+      handleNext()
+    }
+  }, [title])
+
   const handleNext = async () => {
-    let photoUri = await takeSnapshotAsync(meme.current)
+    setLoading(true)
+    const pixelRatio = PixelRatio.get()
+    const wPixels = imgWidth / pixelRatio
+    const hPixels = imgHeight / pixelRatio
+
+    let photoUri = await takeSnapshotAsync(meme.current, {
+      format: 'jpg',
+      width: wPixels,
+      height: hPixels,
+    })
 
     if (photoUri.startsWith('/')) {
       photoUri = 'file://' + photoUri
     }
 
-    props.navigation.push('Finish', { photoUri })
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+      xhr.onload = function() {
+        resolve(xhr.response)
+      }
+      xhr.onerror = function(e) {
+        console.log(e)
+        reject(new TypeError('Network request failed'))
+      }
+      xhr.responseType = 'blob'
+      xhr.open('GET', photoUri, true)
+      xhr.send(null)
+    })
+
+    const user = firebase.auth().currentUser
+
+    const snapshot = await firebase
+      .storage()
+      .ref(`${user.uid}/${moment()}.jpg`)
+      .put(blob)
+
+    const url = await snapshot.ref.getDownloadURL()
+
+    await firebase
+      .database()
+      .ref(`users/${user.uid}/memes`)
+      .push(url)
+
+    setLoading(false)
+    props.navigation.push('Finish', { photoUri, url })
   }
 
   useEffect(() => {
@@ -123,6 +175,21 @@ export default props => {
 
   return (
     <>
+      <ActivityIndicator
+        animating={loading}
+        toast
+        size="large"
+        text="Creating..."
+      />
+      {/* <InputModal
+        isVisible={titleDialogVisible}
+        title="Meme name"
+        message="That should we call this cool meme?"
+        placeholder="Thug life"
+        onSubmit={setTitle}
+        onClose={() => setTitleDialogVisible(false)}
+        initialValue={title}
+      /> */}
       <InputModal
         isVisible={topDialogVisible}
         title="Add Top Text"
@@ -145,9 +212,8 @@ export default props => {
         <Wrapper>
           <ScrollView style={{ flex: 1 }}>
             <Container>
-              <Step>Step 2: Add meme text</Step>
-
-              <DecorateContainer ref={meme}>
+              <Step>Step 3: Add meme text</Step>
+              <DecorateContainer collapsable={false} ref={meme}>
                 <Preview
                   source={{ uri: photoUri }}
                   imgWidth={imgWidth}
@@ -198,7 +264,7 @@ export default props => {
         </Wrapper>
         <ButtonContainer>
           <WingBlank size="md">
-            <Button type="primary" onPress={handleNext}>
+            <Button type="warning" onPress={handleNext}>
               Next
             </Button>
           </WingBlank>

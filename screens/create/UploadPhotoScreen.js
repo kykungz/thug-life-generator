@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState , useEffect} from 'react'
 import styled from 'styled-components'
 import {
   Text,
@@ -82,6 +82,17 @@ export default props => {
     </Album>
   )
 
+   const componentDidMount = async () => {
+      const { status: cameraStatus } = await Permissions.askAsync(
+        Permissions.CAMERA,
+      )
+      const { status: cameraRollStatus } = await Permissions.askAsync(
+        Permissions.CAMERA_ROLL,
+      )
+  }
+
+  useEffect(() => {componentDidMount()}, [])
+
   return (
     <Black>
       <View style={{ flex: 1, backgroundColor: 'black' }}>
@@ -102,7 +113,7 @@ export default props => {
         <ButtonContainer>
           <WingBlank size="md">
             <Button
-              type="primary"
+              type="warning"
               disabled={!photoUri}
               onPress={() => props.navigation.push('Prop', { photoUri })}
             >

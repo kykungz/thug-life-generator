@@ -24,7 +24,6 @@ const Container = styled.View`
   margin: 16px;
   flex: 1;
   justify-content: center;
-  margin-bottom: 80px;
 `
 
 const LoginButton = styled(Button)`
@@ -82,7 +81,7 @@ export default props => {
             placeholder="Password"
             secureTextEntry
           />
-          <LoginButton type="primary" onPress={login}>
+          <LoginButton type="warning" onPress={login}>
             Login
           </LoginButton>
           <LoginButton

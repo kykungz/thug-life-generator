@@ -30,6 +30,7 @@ const Container = styled.View`
 
 const ImageContainer = styled.View`
   position: relative;
+  margin-top: 16px;
 `
 
 const SunGlasses = styled.Image`
@@ -141,8 +142,8 @@ export default props => {
         <View style={{ flex: 1, backgroundColor: 'black' }}>
           <Container>
             <ScrollView style={{ flex: 1 }}>
-              <Step>Step 3: Add props</Step>
-              <ImageContainer ref={meme}>
+              <Step>Step 2: Add props</Step>
+              <ImageContainer collapsable={false} ref={meme}>
                 <Image
                   source={{ uri: photoUri }}
                   style={{ width: imgWidth, height: imgHeight }}
@@ -175,7 +176,7 @@ export default props => {
           </Container>
           <ButtonContainer>
             <WingBlank size="md">
-              <Button type="primary" onPress={handleNext}>
+              <Button type="warning" onPress={handleNext}>
                 Next
               </Button>
             </WingBlank>

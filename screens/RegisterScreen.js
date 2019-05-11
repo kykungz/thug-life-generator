@@ -92,7 +92,7 @@ export default props => {
             placeholder="Confirm Password"
             secureTextEntry
           />
-          <RegisterButton type="primary" onPress={handleRegister}>
+          <RegisterButton type="warning" onPress={handleRegister}>
             Join the Thug
           </RegisterButton>
         </Container>
