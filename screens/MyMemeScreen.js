@@ -6,6 +6,11 @@ import ActionButton from 'react-native-action-button'
 import Icon from 'react-native-vector-icons/Ionicons'
 import cover from '../assets/cover.jpg'
 
+const Black = styled.SafeAreaView`
+  flex: 1;
+  background: black;
+`
+
 const Container = styled.View`
   flex: 1;
 `
@@ -27,18 +32,20 @@ const Grid = styled(FlatGrid)`
 
 export default props => {
   const createNewMeme = () => {
-    props.navigation.push('Create')
+    props.navigation.push('UploadPhoto')
   }
 
   return (
-    <Container>
-      <Grid
-        itemDimension={120}
-        items={items}
-        spacing={8}
-        renderItem={renderItem}
-      />
-      <ActionButton buttonColor="rgba(231,76,60,1)" onPress={createNewMeme} />
-    </Container>
+    <Black>
+      <Container>
+        <Grid
+          itemDimension={120}
+          items={items}
+          spacing={8}
+          renderItem={renderItem}
+        />
+        <ActionButton buttonColor="rgba(231,76,60,1)" onPress={createNewMeme} />
+      </Container>
+    </Black>
   )
 }

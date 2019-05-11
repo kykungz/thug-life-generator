@@ -1,8 +1,9 @@
 import React from 'react'
-import { Text, View, SafeAreaView, TouchableOpacity, Image } from 'react-native'
-import { Camera, Permissions, MediaLibrary } from 'expo'
+import { Text, View, TouchableOpacity, Platform, StatusBar } from 'react-native'
+import { Camera, Permissions, MediaLibrary, Constants } from 'expo'
 import { Icon } from 'antd'
 import styled from 'styled-components'
+import ZoomView from '../components/ZoomView'
 
 const StyledCamera = styled(Camera)`
   flex: 1;
@@ -32,6 +33,7 @@ const TopBar = styled.View`
   background: transparent;
   width: 100%;
   padding: 16px;
+  margin-top: ${Platform.OS === 'ios' ? 0 : Constants.statusBarHeight}px;
 `
 
 const CameraToolbar = styled.View`
@@ -45,6 +47,7 @@ const CameraToolbar = styled.View`
 
 const PreviewToolbar = styled(CameraToolbar)`
   justify-content: space-between;
+  height: ${props => props.height}px;
 `
 
 const Retake = styled.Text`
@@ -65,7 +68,7 @@ const CaptureButton = styled.TouchableOpacity`
   width: 76px;
   height: 76px;
   border-radius: 76px;
-  border-width: 8px;
+  border-width: 10px;
   border-color: rgba(0, 0, 0, 0.2);
 `
 
@@ -74,12 +77,16 @@ export default class CameraScreen extends React.Component {
     hasPermission: null,
     type: Camera.Constants.Type.back,
     flashMode: Camera.Constants.FlashMode.off,
-    photoUri: null,
+    photo: null,
+    bottomBarLayout: null,
+    loading: false,
+    zoom: 0,
   }
 
   constructor(props) {
     super(props)
     this.camera = React.createRef()
+    console.log(Constants.statusBarHeight)
   }
 
   async componentDidMount() {
@@ -137,18 +144,15 @@ export default class CameraScreen extends React.Component {
   }
 
   capture = async () => {
-    console.log('taking picture')
-    const { uri } = await this.camera.current.takePictureAsync()
-    this.setState({ photoUri: uri })
+    console.log('capturing...')
+    const photo = await this.camera.current.takePictureAsync()
+    this.setState({ photo: photo })
+    console.log('captured')
   }
 
-  ok = async () => {
-    console.log('creating image')
-    console.log(this.state.photoUri)
-    const asset = await MediaLibrary.createAssetAsync(this.state.photoUri)
-    console.log('creating album')
-    await MediaLibrary.createAlbumAsync('Thug Life Memes', asset, false)
-    console.log('finished')
+  submit = () => {
+    this.props.navigation.goBack()
+    this.props.navigation.state.params.setPhotoUri(this.state.photo.uri)
   }
 
   render() {
@@ -160,50 +164,71 @@ export default class CameraScreen extends React.Component {
     } else {
       return (
         <Container>
-          {this.state.photoUri ? (
-            <PreviewImage source={{ uri: this.state.photoUri }} />
-          ) : (
-            <StyledCamera
-              ref={this.camera}
-              type={this.state.type}
-              flashMode={this.state.flashMode}
-              autoFocus={Camera.Constants.AutoFocus.on}
-            >
-              <TopBar>
-                <TouchableOpacity
-                  onPress={() => this.props.navigation.goBack()}
-                >
-                  <Icon color="white" size={30} name="left" />
-                </TouchableOpacity>
-              </TopBar>
-            </StyledCamera>
-          )}
-
-          {this.state.photoUri ? (
-            <PreviewToolbar>
-              <TouchableOpacity
-                onPress={() => this.setState({ photoUri: null })}
+          <ZoomView
+            onZoomProgress={zoom => {
+              console.log(zoom)
+              this.setState({ zoom })
+            }}
+          >
+            <StatusBar barStyle="light-content" />
+            {this.state.photo ? (
+              <PreviewImage source={{ uri: this.state.photo.uri }} />
+            ) : (
+              <StyledCamera
+                zoom={this.state.zoom}
+                ref={this.camera}
+                type={this.state.type}
+                flashMode={this.state.flashMode}
+                autoFocus={Camera.Constants.AutoFocus.on}
               >
-                <Retake>Retake</Retake>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Next>
-                  <Text style={{ fontSize: 14 }}>Next</Text>
-                  <Icon size="sm" color="black" name="right" />
-                </Next>
-              </TouchableOpacity>
-            </PreviewToolbar>
-          ) : (
-            <CameraToolbar>
-              <TouchableOpacity onPress={this.toggleFlashMode}>
-                <Icon color="white" size={30} name="thunderbolt" />
-              </TouchableOpacity>
-              <CaptureButton onPress={this.capture} />
-              <TouchableOpacity onPress={this.flipCamera}>
-                <Icon color="white" size={30} name="sync" />
-              </TouchableOpacity>
-            </CameraToolbar>
-          )}
+                <TopBar>
+                  <TouchableOpacity
+                    onPress={() => this.props.navigation.goBack()}
+                  >
+                    <Icon color="white" size={30} name="left" />
+                  </TouchableOpacity>
+                </TopBar>
+              </StyledCamera>
+            )}
+
+            {this.state.photo ? (
+              <PreviewToolbar height={this.state.bottomBarLayout.height}>
+                <TouchableOpacity
+                  onPress={() => this.setState({ photo: null })}
+                >
+                  <Retake>Retake</Retake>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.submit}>
+                  <Next>
+                    <Text style={{ fontSize: 14 }}>Next</Text>
+                    <Icon size="sm" color="black" name="right" />
+                  </Next>
+                </TouchableOpacity>
+              </PreviewToolbar>
+            ) : (
+              <CameraToolbar
+                onLayout={e =>
+                  this.setState({ bottomBarLayout: e.nativeEvent.layout })
+                }
+              >
+                <TouchableOpacity onPress={this.toggleFlashMode}>
+                  <Icon
+                    color={
+                      this.state.flashMode === Camera.Constants.FlashMode.off
+                        ? 'white'
+                        : 'orange'
+                    }
+                    size={30}
+                    name="thunderbolt"
+                  />
+                </TouchableOpacity>
+                <CaptureButton onPress={this.capture} />
+                <TouchableOpacity onPress={this.flipCamera}>
+                  <Icon color="white" size={30} name="sync" />
+                </TouchableOpacity>
+              </CameraToolbar>
+            )}
+          </ZoomView>
         </Container>
       )
     }
