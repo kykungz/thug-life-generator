@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Text, Image, TouchableOpacity, Share, Platform } from 'react-native'
-import { Button, WingBlank, Toast, ActivityIndicator } from 'antd'
-import { MediaLibrary, IntentLauncherAndroid } from 'expo'
+import { Button, WingBlank, ActivityIndicator } from 'antd'
+import { MediaLibrary } from 'expo'
 
 import share from '../../assets/share.png'
 import save from '../../assets/save.png'

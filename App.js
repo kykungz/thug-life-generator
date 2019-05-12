@@ -125,7 +125,7 @@ const StackNavigator = createStackNavigator(
     },
     Finish: {
       screen: FinishScreen,
-      navigationOptions: { title: `Done` },
+      navigationOptions: { title: `Share Your Meme` },
     },
     Camera: {
       screen: CameraScreen,

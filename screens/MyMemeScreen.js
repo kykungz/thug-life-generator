@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import MemeCard from '../components/MemeCard'
 import styled from 'styled-components'
 import { FlatGrid } from 'react-native-super-grid'
 import ActionButton from 'react-native-action-button'
+import firebase from 'firebase'
 import Icon from 'react-native-vector-icons/Ionicons'
 import cover from '../assets/cover.jpg'
 
@@ -15,36 +16,64 @@ const Container = styled.View`
   flex: 1;
 `
 
-const items = [
-  { name: 'Test1', cover },
-  { name: 'Test2', cover },
-  { name: 'Test3', cover },
-  { name: 'Test4', cover },
-]
-
-const renderItem = ({ item, index }) => {
-  return <MemeCard item={item} contain />
-}
-
-const Grid = styled(FlatGrid)`
-  /* background: #f0f0f0; */
-`
-
 export default props => {
-  const createNewMeme = () => {
-    props.navigation.push('UploadPhoto')
+  const [memes, setMemes] = useState([])
+
+  const handlePress = async url => {
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+      xhr.onload = function() {
+        resolve(xhr.response)
+      }
+      xhr.onerror = function(e) {
+        console.log(e)
+        reject(new TypeError('Network request failed'))
+      }
+      xhr.responseType = 'blob'
+      xhr.open('GET', url, true)
+      xhr.send(null)
+    })
+    props.navigation.push('Finish', { photoUri: url, url })
   }
+
+  const renderItem = ({ item }) => {
+    return (
+      <MemeCard item={item} onPress={() => handlePress(item.url)} contain />
+    )
+  }
+
+  const componentsDidMount = async () => {
+    const user = firebase.auth().currentUser
+    firebase
+      .database()
+      .ref(`users/${user.uid}/memes`)
+      .on('value', snapshot => {
+        try {
+          const memes = snapshot.val()
+          setMemes(Object.keys(memes).map(key => ({ key, url: memes[key] })))
+        } catch (error) {
+          firebase.auth().signOut()
+        }
+      })
+  }
+
+  useEffect(() => {
+    componentsDidMount()
+  }, [])
 
   return (
     <Black>
       <Container>
-        <Grid
+        <FlatGrid
           itemDimension={120}
-          items={items}
+          items={memes}
           spacing={8}
           renderItem={renderItem}
         />
-        <ActionButton buttonColor="rgba(231,76,60,1)" onPress={createNewMeme} />
+        <ActionButton
+          buttonColor="rgba(231,76,60,1)"
+          onPress={() => props.navigation.push('UploadPhoto')}
+        />
       </Container>
     </Black>
   )

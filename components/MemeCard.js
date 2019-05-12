@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
 import styled from 'styled-components'
 
 const Cover = styled.ImageBackground`
@@ -35,6 +35,7 @@ const CoverContain = ({ source }) => (
 const Container = styled.View`
   border-radius: 4px;
   overflow: hidden;
+  background: white;
 `
 
 const Wrapper = styled.View`
@@ -44,27 +45,20 @@ const Wrapper = styled.View`
   shadow-offset: 1px 1px;
 `
 
-const InfoContainer = styled.View`
-  background: white;
-  padding: 8px;
-`
-
 export default props => {
-  const { contain } = props
-  const { cover, name } = props.item
+  const { contain, item, onPress } = props
 
   return (
-    <Wrapper>
-      <Container>
-        {contain ? (
-          <CoverContain source={cover} />
-        ) : (
-          <CoverTop source={cover} />
-        )}
-        <InfoContainer>
-          <Text>{name}</Text>
-        </InfoContainer>
-      </Container>
-    </Wrapper>
+    <TouchableOpacity onPress={onPress}>
+      <Wrapper>
+        <Container>
+          {contain ? (
+            <CoverContain source={{ uri: item.url }} />
+          ) : (
+            <CoverTop source={{ uri: item.url }} />
+          )}
+        </Container>
+      </Wrapper>
+    </TouchableOpacity>
   )
 }

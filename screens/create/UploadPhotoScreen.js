@@ -1,4 +1,4 @@
-import React, { useMemo, useState , useEffect} from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import {
   Text,
@@ -29,9 +29,15 @@ const Preview = styled.Image`
   margin: 16px 0;
 `
 
-const Album = styled(TouchableHighlight)`
-  border-radius: 8px;
-  background: #f0f0f0;
+const Placeholder = styled.View`
+  flex: 1;
+  background: lightgray;
+  margin: 16px -16px;
+`
+
+const Action = styled(TouchableHighlight)`
+  border-radius: 2px;
+  background: white;
   flex: 1;
   justify-content: center;
   align-items: center;
@@ -51,6 +57,7 @@ export default props => {
     () => [
       {
         icon: 'picture',
+        text: 'Import from album',
         onPress: async () => {
           const result = await ImagePicker.launchImageLibraryAsync()
           if (!result.cancelled) {
@@ -60,6 +67,7 @@ export default props => {
       },
       {
         icon: 'camera',
+        text: 'Take a photo',
         // onPress: () => props.navigation.push('Camera', { setPhotoUri }),
         onPress: async () => {
           const result = await ImagePicker.launchCameraAsync()
@@ -73,25 +81,35 @@ export default props => {
   )
 
   const renderItem = (item, index) => (
-    <Album
+    <Action
       underlayColor="#f5f5f5"
       onPress={item.onPress}
       left={index % 2 === 0}
     >
-      <Icon size={50} color="black" name={item.icon} />
-    </Album>
+      <View style={{ alignItems: 'center' }}>
+        <Icon
+          size={50}
+          color="black"
+          name={item.icon}
+          style={{ marginBottom: 8 }}
+        />
+        <Text>{item.text}</Text>
+      </View>
+    </Action>
   )
 
-   const componentDidMount = async () => {
-      const { status: cameraStatus } = await Permissions.askAsync(
-        Permissions.CAMERA,
-      )
-      const { status: cameraRollStatus } = await Permissions.askAsync(
-        Permissions.CAMERA_ROLL,
-      )
+  const componentDidMount = async () => {
+    const { status: cameraStatus } = await Permissions.askAsync(
+      Permissions.CAMERA,
+    )
+    const { status: cameraRollStatus } = await Permissions.askAsync(
+      Permissions.CAMERA_ROLL,
+    )
   }
 
-  useEffect(() => {componentDidMount()}, [])
+  useEffect(() => {
+    componentDidMount()
+  }, [])
 
   return (
     <Black>
@@ -101,7 +119,7 @@ export default props => {
           {photoUri ? (
             <Preview source={{ uri: photoUri }} resizeMode="contain" />
           ) : (
-            <Preview source={cover} resizeMode="contain" />
+            <Placeholder />
           )}
           <Grid
             hasLine={false}
