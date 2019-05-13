@@ -102,29 +102,6 @@ export default class CameraScreen extends React.Component {
     })
   }
 
-  // upload = async () => {
-  //   const { assets } = await MediaLibrary.getAssetsAsync({ first: 100 })
-  //   const promises = assets
-  //     .filter(asset => asset.mediaSubtypes.length === 0)
-  //     .map(asset => {
-  //       console.log('fetching ' + asset.filename)
-  //       const data = new FormData()
-  //       data.append('photo', {
-  //         name: 'test',
-  //         type: 'multipart/form-data',
-  //         uri: asset.uri,
-  //       })
-  //       return fetch(
-  //         'https://api-dot-nisitgeneration-c2a35.appspot.com/mobile-dev/upload',
-  //         {
-  //           method: 'POST',
-  //           body: data,
-  //         },
-  //       )
-  //     })
-  //   await Promise.all(promises)
-  // }
-
   toggleFlashMode = () => {
     this.setState(prevState => ({
       flashMode:
