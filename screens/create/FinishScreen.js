@@ -79,7 +79,7 @@ export default props => {
       <Wrapper>
         <Black>
           <Container>
-            <Preview source={{ uri: photoUri }} resizeMode="contain" />
+            <Preview source={{ uri: url }} resizeMode="contain" />
             <ActionContainer>
               <TouchableOpacity onPress={handleSave}>
                 <ActionButton>

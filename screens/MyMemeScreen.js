@@ -6,6 +6,8 @@ import ActionButton from 'react-native-action-button'
 import firebase from 'firebase'
 import Icon from 'react-native-vector-icons/Ionicons'
 import cover from '../assets/cover.jpg'
+import axios from 'axios'
+import { Buffer } from 'buffer'
 
 const Black = styled.SafeAreaView`
   flex: 1;
@@ -20,19 +22,26 @@ export default props => {
   const [memes, setMemes] = useState([])
 
   const handlePress = async url => {
-    const blob = await new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest()
-      xhr.onload = function() {
-        resolve(xhr.response)
-      }
-      xhr.onerror = function(e) {
-        console.log(e)
-        reject(new TypeError('Network request failed'))
-      }
-      xhr.responseType = 'blob'
-      xhr.open('GET', url, true)
-      xhr.send(null)
-    })
+    // const blob = await new Promise((resolve, reject) => {
+    //   const xhr = new XMLHttpRequest()
+    //   xhr.onload = function() {
+    //     resolve(xhr.response)
+    //   }
+    //   xhr.onerror = function(e) {
+    //     console.log(e)
+    //     reject(new TypeError('Network request failed'))
+    //   }
+    //   xhr.responseType = 'blob'
+    //   xhr.open('GET', url, true)
+    //   xhr.send(null)
+    // })
+
+    // let image = await axios.get(url, {
+    //   responseType: 'arraybuffer',
+    // })
+    // let returnedB64 =
+    //   'data:image/jpg;' + Buffer.from(image.data).toString('base64')
+
     props.navigation.push('Finish', { photoUri: url, url })
   }
 
