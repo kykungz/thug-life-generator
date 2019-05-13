@@ -9,6 +9,7 @@ import CameraScreen from './screens/CameraScreen'
 import LoginScreen from './screens/LoginScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import MyMemeScreen from './screens/MyMemeScreen'
+import WorldMemeScreen from './screens/WorldMemeScreen'
 import SettingScreen from './screens/SettingScreen'
 import { Ionicons } from '@expo/vector-icons'
 import {
@@ -57,9 +58,13 @@ const handleCustomTransition = ({ scenes }) => {
 
 const TabNavigator = createBottomTabNavigator(
   {
-    Main: {
+    Meme: {
       screen: MyMemeScreen,
       navigationOptions: { title: `My Memes` },
+    },
+    World: {
+      screen: WorldMemeScreen,
+      navigationOptions: { title: `World Memes` },
     },
     Setting: {
       screen: SettingScreen,
@@ -71,10 +76,12 @@ const TabNavigator = createBottomTabNavigator(
       tabBarIcon: ({ tintColor }) => {
         const { routeName } = navigation.state
         let iconName
-        if (routeName === 'Main') {
+        if (routeName === 'Meme') {
           iconName = `md-home`
         } else if (routeName === 'Setting') {
           iconName = `md-settings`
+        } else if (routeName === 'World') {
+          iconName = 'md-globe'
         }
         return <Ionicons name={iconName} size={25} color={tintColor} />
       },
@@ -92,6 +99,12 @@ const TabNavigator = createBottomTabNavigator(
 
 const StackNavigator = createStackNavigator(
   {
+    Main: {
+      screen: TabNavigator,
+      navigationOptions: ({ navigation }) => ({
+        title: navigation.getParam('title', 'Thug Life Generator'),
+      }),
+    },
     Login: {
       screen: LoginScreen,
       navigationOptions: { header: null },
@@ -101,12 +114,6 @@ const StackNavigator = createStackNavigator(
       navigationOptions: {
         title: `Register`,
       },
-    },
-    Main: {
-      screen: TabNavigator,
-      navigationOptions: ({ navigation }) => ({
-        title: navigation.getParam('title', 'Thug Life Generator'),
-      }),
     },
     UploadPhoto: {
       screen: UploadPhotoScreen,
@@ -166,7 +173,7 @@ export default () => {
       impact: require('./assets/fonts/impact.ttf'),
     })
 
-    firebase.auth().onAuthStateChanged(function(user) {
+    firebase.auth().onAuthStateChanged(async user => {
       if (user) {
         // Signed in
         console.log('signed in')

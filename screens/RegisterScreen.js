@@ -45,9 +45,13 @@ export default props => {
   const handleRegister = async () => {
     setLoading(true)
     try {
-      await firebase.auth().createUserWithEmailAndPassword(email, password)
-      setLoading(false)
-      props.navigation.replace('Main')
+      const auth = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+      await firebase
+        .database()
+        .ref(`users/${auth.user.uid}`)
+        .set({ name, email })
     } catch (error) {
       Alert.alert(
         'The Thug rejects you...',
@@ -56,7 +60,6 @@ export default props => {
         { cancelable: false },
       )
     }
-    setLoading(false)
   }
 
   useEffect(() => {

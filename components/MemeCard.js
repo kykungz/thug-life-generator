@@ -35,7 +35,8 @@ const CoverContain = ({ source }) => (
 const Container = styled.View`
   border-radius: 4px;
   overflow: hidden;
-  background: white;
+  /* background: white; */
+  align-items: center;
 `
 
 const Wrapper = styled.View`
@@ -43,6 +44,11 @@ const Wrapper = styled.View`
   shadow-radius: 2px;
   shadow-color: rgba(0, 0, 0, 0.2);
   shadow-offset: 1px 1px;
+`
+
+const Creator = styled.Text`
+  color: #f0f0f0;
+  margin-top: 4px;
 `
 
 export default props => {
@@ -57,6 +63,7 @@ export default props => {
           ) : (
             <CoverTop source={{ uri: item.url }} />
           )}
+          <Creator>by {item.name}</Creator>
         </Container>
       </Wrapper>
     </TouchableOpacity>

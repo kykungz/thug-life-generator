@@ -43,24 +43,32 @@ export default props => {
   }
 
   const componentDidMount = async () => {
-    const user = firebase.auth().currentUser
+    console.log('mounted')
     firebase
       .database()
-      .ref(`users/${user.uid}`)
+      .ref(`users`)
       .on('value', snapshot => {
+        console.log('value')
+        console.log(snapshot.val())
         try {
-          const value = snapshot.val()
-          const memes = value.memes || {}
+          const users = snapshot.val()
           setMemes(
-            Object.keys(memes).map(key => ({
-              key,
-              url: memes[key],
-              name: value.name,
-              email: value.email,
-            })),
+            Object.keys(users)
+              .map(key => {
+                const user = users[key]
+                const memes = user.memes || {}
+                return Object.keys(memes).map(key => ({
+                  key,
+                  url: memes[key],
+                  name: user.name,
+                  email: user.email,
+                }))
+              })
+              .reduce((acc, cur) => acc.concat(cur), []),
           )
         } catch (error) {
           firebase.auth().signOut()
+          console.log(error)
         }
       })
   }
@@ -77,10 +85,6 @@ export default props => {
           items={memes}
           spacing={8}
           renderItem={renderItem}
-        />
-        <ActionButton
-          buttonColor="rgba(231,76,60,1)"
-          onPress={() => props.navigation.push('UploadPhoto')}
         />
       </Container>
     </Black>

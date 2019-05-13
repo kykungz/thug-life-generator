@@ -48,6 +48,7 @@ export default props => {
     try {
       await firebase.auth().signInWithEmailAndPassword(email, password)
     } catch (error) {
+      setLoading(false)
       Alert.alert(
         'The Thug rejects you...',
         error.message,
