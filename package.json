@@ -28,7 +28,7 @@
     "react-navigation": "^3.9.1",
     "react-navigation-transitions": "^1.0.10",
     "styled-components": "^4.2.0",
-    "yarn": "^1.15.2"
+    "yarn": "^1.22.0"
   },
   "devDependencies": {
     "@babel/runtime": "^7.4.4",
