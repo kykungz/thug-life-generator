@@ -16,7 +16,7 @@
     "buffer": "^5.2.1",
     "expo": "^32.0.0",
     "firebase": "^6.0.2",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "moment-timezone": "^0.5.25",
     "react": "^16.8.6",
     "react-native": "https://github.com/the-atelier/react-native#sdk-32",
